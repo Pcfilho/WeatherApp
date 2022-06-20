@@ -11,17 +11,24 @@ export default function App() {
   const [darkTheme, setDarkTheme] = useState(true);
   const [currentTemperature, setCurrentTemperature] = useState('27')
   const [location, setLocation] = useState('BR, Fortaleza')
+  const [currentHour, setCurrentHour] = useState('15:00')
+
+
+  const [wind, setWind] = useState('65')
+  const [humidity, setHumidity] = useState('80')
+  const [tempMin, setTempMin] = useState('21')
+  const [tempMax, setTempMax] = useState('33')
   
   const styles = StyleSheet.create({
     ScrollView: {
       backgroundColor: darkTheme ? '#232634' : '#f2f2f2',
-      paddingVertical: 5,
       paddingVertical: 50,
     },
     container: {
       flex: 1,
       backgroundColor: darkTheme ? '#232634' : '#f2f2f2',
       alignItems: 'center',
+      marginBottom: 50,
     },
     temperature: {
       alignItems: 'center',
@@ -57,7 +64,40 @@ export default function App() {
       margin: 15,
       fontSize: 20,
       fontWeight: 'bold',
-    }
+    },
+    infoCards: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+
+    },
+    themeButton: {
+      margin: 10,
+      marginLeft: 300,
+      alignItems: 'center',
+      justifyContent: 'center',
+      width: 50,
+      height: 50,
+      borderRadius: 25
+    }, 
+    squareButton: {
+      backgroundColor: darkTheme ? '#f2f2f2' : '#8f8f8f',
+      justifyContent: 'center',
+      borderRadius: 20,
+      marginRight: 20,
+      width: 50,
+      height: 25,
+    },
+    circleButton: {
+      backgroundColor: darkTheme ? '#232634' : '#f2f2f2',
+      alignSelf: darkTheme ? 'flex-end' : 'flex-start',
+      margin: 5,
+      height: 20,
+      width: 20,
+      borderRadius: 50,
+  
+      
+    },
+
 
 
   });
@@ -65,7 +105,7 @@ export default function App() {
   
 
   return (
-    <ScrollView style={styles.ScrollView} bouncesZoom={true}>
+    <ScrollView style={styles.ScrollView}>
     <View style={styles.container}>
       
       <TouchableOpacity style={styles.refreshButton}>
@@ -79,6 +119,8 @@ export default function App() {
         <Text style={[styles.temperatureText, {fontSize: 14}]}>°C</Text>
       </View>
 
+    <Text style={[styles.temperatureText, {fontSize: 14}]}>{location} {currentHour}</Text>
+
       <View style={styles.cardView}>
         <MainCard title={'Manhã'}backgroundColor={darkTheme ? '#ff873d': '#cc6e30'} icon={'morning'} temperature={'21'}></MainCard>
         <MainCard title={'Tarde'}backgroundColor={darkTheme ? '#d29600': '#FCC63F'} icon={'afternoon'} temperature={'31'}></MainCard>
@@ -88,11 +130,17 @@ export default function App() {
       <View style={styles.info}>
         <Text style={styles.infoText}>Informações Adicionais </Text>
         <View style={styles.infoCards}>
-          <InfoCard title={'Wind'} value={'65 km/h'}></InfoCard>
-          <InfoCard title={'Wind'} value={'65 km/h'}></InfoCard>
-          <InfoCard title={'Wind'} value={'65 km/h'}></InfoCard>
-          <InfoCard ></InfoCard>
+          <InfoCard title={'Vento'} value={wind + ' m/h'}></InfoCard>
+          <InfoCard title={'Umidade'} value={humidity + '%'}></InfoCard>
+          <InfoCard title={'Temp. Max.'} value={tempMax + '°C'}></InfoCard>
+          <InfoCard title={'Temp. Min.'} value={tempMin + '°C'}></InfoCard>
         </View>
+      </View>
+
+      <View style={styles.themeButton}>
+        <TouchableOpacity style={styles.squareButton} onPress={() => darkTheme ? setDarkTheme(false) : setDarkTheme(true)}>
+          <View style={styles.circleButton} ></View>
+        </TouchableOpacity>
       </View>
 
     </View>
