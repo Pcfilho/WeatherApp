@@ -6,6 +6,9 @@ import { Feather } from '@expo/vector-icons';
 import { EvilIcons } from '@expo/vector-icons';
 import MainCard from './components/MainCard';
 import InfoCard from './components/InfoCard';
+import * as Location from 'expo-location';
+import getCurrentWeather from './api/ConsultApi';
+
 
 export default function App() {
   const [darkTheme, setDarkTheme] = useState(true);
@@ -18,6 +21,7 @@ export default function App() {
   const [humidity, setHumidity] = useState('80')
   const [tempMin, setTempMin] = useState('21')
   const [tempMax, setTempMax] = useState('33')
+  const [locationCoords, updateCoords] = useState([])
   
   const styles = StyleSheet.create({
     ScrollView: {
@@ -102,13 +106,45 @@ export default function App() {
 
   });
 
-  
+  async function setCurrentWeather(){
+    getLocation()
+
+
+    let date = new Date();
+    let hour = date.getHours();
+    let minute = date.getMinutes();
+    setCurrentHour(hour + ':' + minute);
+
+
+    let data = await getCurrentWeather(locationCoords)
+    setCurrentTemperature(data[0])
+    setTempMax(data[1])
+    setTempMin(data[2])
+    setWind(data[3])
+    setHumidity(data[4])
+    setLocation(data[5])
+  }
+
+  async function getLocation() {
+    let { status } = await Location.requestForegroundPermissionsAsync()
+    if(status !== 'granted') {
+      setErrorMsg('Permission denied.')
+    } else {
+      let location = await Location.getCurrentPositionAsync({})
+      await updateCoords(location.coords)
+    }
+
+
+  }
+  useEffect(() => {
+    setCurrentWeather();
+  }, []);
 
   return (
     <ScrollView style={styles.ScrollView}>
     <View style={styles.container}>
       
-      <TouchableOpacity style={styles.refreshButton}>
+      <TouchableOpacity style={styles.refreshButton} onPress={() => setCurrentWeather()}>
       <EvilIcons name="refresh" style={{marginTop: 30}} size={40} color={darkTheme ? 'white' : 'black'} />
       </TouchableOpacity>
       
@@ -122,9 +158,9 @@ export default function App() {
     <Text style={[styles.temperatureText, {fontSize: 14}]}>{location} {currentHour}</Text>
 
       <View style={styles.cardView}>
-        <MainCard title={'Manhã'}backgroundColor={darkTheme ? '#ff873d': '#cc6e30'} icon={'morning'} temperature={'21'}></MainCard>
-        <MainCard title={'Tarde'}backgroundColor={darkTheme ? '#d29600': '#FCC63F'} icon={'afternoon'} temperature={'31'}></MainCard>
-        <MainCard title={'Noite'}backgroundColor={darkTheme ? '#008081': '#38B7B8'} icon={'night'} temperature={'33'}></MainCard>
+        <MainCard title={'Manhã'}backgroundColor={darkTheme ? '#ff873d': '#cc6e30'} icon={'morning'} temperature={'21°'}></MainCard>
+        <MainCard title={'Tarde'}backgroundColor={darkTheme ? '#d29600': '#FCC63F'} icon={'afternoon'} temperature={'31°'}></MainCard>
+        <MainCard title={'Noite'}backgroundColor={darkTheme ? '#008081': '#38B7B8'} icon={'night'} temperature={'33°'}></MainCard>
       </View>
 
       <View style={styles.info}>
