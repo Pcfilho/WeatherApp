@@ -6,7 +6,7 @@ export default async function getCurrentWeather(locationCoords) {
 
     const lon = locationCoords.longitude
 
-    const API_KEY = '4e0bfa417d1d2e2e02899dddcdab1cd8'
+    const API_KEY = 'SUA API KEY AQUI'
 
     let results = []
 
