@@ -1,6 +1,7 @@
-*.java linguist-language=ReactNative
-*.mm linguist-language=ReactNative
-*.cpp linguist-language=ReactNative
+*.java linguist-language=JavaScript
+*.mm linguist-language=JavaScript
+*.cpp linguist-language=JavaScript
+*.bzl linguist-language=JavaScript
 
 *.pbxproj -text
 
