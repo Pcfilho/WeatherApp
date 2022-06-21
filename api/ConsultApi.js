@@ -6,12 +6,13 @@ export default async function getCurrentWeather(locationCoords) {
 
     const lon = locationCoords.longitude
 
+    const API_KEY = '4e0bfa417d1d2e2e02899dddcdab1cd8'
+
     let results = []
 
-    await axios.get(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=4e0bfa417d1d2e2e02899dddcdab1cd8&units=metric`)
+    await axios.get(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`)
     .then( (response) => {
         const data = response.data
-        console.log(data);
         const locationName = (data.sys.country + ', ' + data.name)
         const temperatureMin = data.main.temp_min
         const temperatureMax = data.main.temp_max
