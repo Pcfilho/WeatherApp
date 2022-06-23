@@ -6,7 +6,7 @@ export default async function getCurrentWeather(locationCoords) {
 
     const lon = locationCoords.longitude
 
-    const API_KEY = 'SUA API KEY AQUI'
+    const API_KEY = '4e0bfa417d1d2e2e02899dddcdab1cd8'
 
     let results = []
 
@@ -25,6 +25,20 @@ export default async function getCurrentWeather(locationCoords) {
     .catch((error) => {
         console.error(error)
     })
+
+    await axios.get(`https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=hourly&appid=${API_KEY}&units=metric`)
+    .then( (response) => {
+        const data = response.data;
+        const nightTemp = data.daily[0].temp.night;
+        const eveningTemp = data.daily[0].temp.eve;
+        const morningTemp = data.daily[0].temp.morn;
+
+        results.push(nightTemp, eveningTemp, morningTemp)
+    })
+    .catch( (err) => {
+        console.error(err);
+    })
+
 
     return results;
 }

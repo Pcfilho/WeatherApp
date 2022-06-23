@@ -4,10 +4,12 @@ import { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { EvilIcons } from '@expo/vector-icons';
-import MainCard from './components/MainCard';
-import InfoCard from './components/InfoCard';
 import * as Location from 'expo-location';
-import getCurrentWeather from './api/ConsultApi';
+
+
+import getCurrentWeather from './services/api/Api';
+import MainCard from './components/MainCard/index';
+import InfoCard from './components/InfoCard/InfoCard';
 
 
 export default function App() {
@@ -22,6 +24,9 @@ export default function App() {
   const [tempMin, setTempMin] = useState('21')
   const [tempMax, setTempMax] = useState('33')
   const [locationCoords, updateCoords] = useState([])
+  const [morningTemp, setMorningTemp] = useState('20')
+  const [eveningTemp, setEveningTemp] = useState('20')
+  const [nightTemp, setNightTemp] = useState('20')
   
   const styles = StyleSheet.create({
     ScrollView: {
@@ -123,6 +128,10 @@ export default function App() {
     setWind(data[3])
     setHumidity(data[4])
     setLocation(data[5])
+    setNightTemp(data[6])
+    setEveningTemp(data[7])
+    setMorningTemp(data[8])
+    
   }
 
   async function getLocation() {
@@ -158,9 +167,9 @@ export default function App() {
     <Text style={[styles.temperatureText, {fontSize: 14}]}>{location} {currentHour}</Text>
 
       <View style={styles.cardView}>
-        <MainCard title={'Manhã'}backgroundColor={darkTheme ? '#ff873d': '#cc6e30'} icon={'morning'} temperature={'21°'}></MainCard>
-        <MainCard title={'Tarde'}backgroundColor={darkTheme ? '#d29600': '#FCC63F'} icon={'afternoon'} temperature={'31°'}></MainCard>
-        <MainCard title={'Noite'}backgroundColor={darkTheme ? '#008081': '#38B7B8'} icon={'night'} temperature={'33°'}></MainCard>
+        <MainCard title={'Manhã'}backgroundColor={darkTheme ? '#ff873d': '#cc6e30'} icon={'morning'} temperature={morningTemp + '°C'}></MainCard>
+        <MainCard title={'Tarde'}backgroundColor={darkTheme ? '#d29600': '#FCC63F'} icon={'afternoon'} temperature={eveningTemp + '°C'}></MainCard>
+        <MainCard title={'Noite'}backgroundColor={darkTheme ? '#008081': '#38B7B8'} icon={'night'} temperature={nightTemp + '°C'}></MainCard>
       </View>
 
       <View style={styles.info}>
