@@ -6,7 +6,9 @@ import { Fontisto } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 
 const MainCard = (props) => {
-
+    const temperature = (props.temperature) ;
+    let tempTreat = temperature + "°C";
+    
     const Icon = () => {
         if (props.icon == 'morning') {
             return(
@@ -53,7 +55,7 @@ const MainCard = (props) => {
         <View style={styles.card}>
             <Text style={styles.text}>{props.title}</Text>
             <Icon></Icon>
-            <Text style={styles.text}>{props.temperature}</Text>
+            <Text style={styles.text}>{tempTreat}</Text>
         </View>
     )
 }
