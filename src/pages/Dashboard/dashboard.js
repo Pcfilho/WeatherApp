@@ -1,5 +1,4 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
+import React, { useContext } from 'react';
 import { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from 'react-native';
 import { Feather } from '@expo/vector-icons';
@@ -10,10 +9,10 @@ import * as Location from 'expo-location';
 import getCurrentWeather from '../../services/api/Api';
 import MainCard from '../../components/MainCard/index';
 import InfoCard from '../../components/InfoCard/InfoCard';
-
+import { ThemeContext } from '../../contexts/theme';
 
 export default function DashBoard() {
-    const [darkTheme, setDarkTheme] = useState(true);
+    const { darkTheme, setDarkTheme } = useContext(ThemeContext)
     const [currentTemperature, setCurrentTemperature] = useState('27')
     const [location, setLocation] = useState('BR, Fortaleza')
     const [currentHour, setCurrentHour] = useState('15:00')
@@ -167,9 +166,9 @@ export default function DashBoard() {
         <Text style={[styles.temperatureText, {fontSize: 14}]}>{location} {currentHour}</Text>
 
         <View style={styles.cardView}>
-            <MainCard title={'Manhã'}backgroundColor={darkTheme ? '#ff873d': '#cc6e30'} icon={'morning'} temperature={morningTemp}></MainCard>
-            <MainCard title={'Tarde'}backgroundColor={darkTheme ? '#d29600': '#FCC63F'} icon={'afternoon'} temperature={eveningTemp}></MainCard>
-            <MainCard title={'Noite'}backgroundColor={darkTheme ? '#008081': '#38B7B8'} icon={'night'} temperature={nightTemp}></MainCard>
+            <MainCard title={'Manhã'} icon={'morning'} temperature={morningTemp}></MainCard>
+            <MainCard title={'Tarde'} icon={'afternoon'} temperature={eveningTemp}></MainCard>
+            <MainCard title={'Noite'} icon={'night'} temperature={nightTemp}></MainCard>
         </View>
 
         <View style={styles.info}>
@@ -183,7 +182,7 @@ export default function DashBoard() {
         </View>
 
         <View style={styles.themeButton}>
-            <TouchableOpacity style={styles.squareButton} onPress={() => darkTheme ? setDarkTheme(false) : setDarkTheme(true)}>
+            <TouchableOpacity style={styles.squareButton} onPress={() => setDarkTheme(!darkTheme)}>
             <View style={styles.circleButton} ></View>
             </TouchableOpacity>
         </View>
