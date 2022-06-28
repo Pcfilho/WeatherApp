@@ -5,27 +5,27 @@ import { Feather } from '@expo/vector-icons';
 import { EvilIcons } from '@expo/vector-icons';
 import * as Location from 'expo-location';
 
-
 import getCurrentWeather from '../../services/api/Api';
 import MainCard from '../../components/MainCard/index';
 import InfoCard from '../../components/InfoCard/InfoCard';
 import { ThemeContext } from '../../contexts/theme';
 
 export default function DashBoard() {
-    const { darkTheme, setDarkTheme } = useContext(ThemeContext)
-    const [currentTemperature, setCurrentTemperature] = useState('27')
-    const [location, setLocation] = useState('BR, Fortaleza')
-    const [currentHour, setCurrentHour] = useState('15:00')
+    const { darkTheme, setDarkTheme } = useContext(ThemeContext);
+    const [currentTemperature, setCurrentTemperature] = useState('27');
+    const [location, setLocation] = useState('BR, Fortaleza');
+    const [currentHour, setCurrentHour] = useState('15:00');
+    const [isRaining, setIsRaining] = useState('');
 
 
-    const [wind, setWind] = useState('65')
-    const [humidity, setHumidity] = useState('80')
-    const [tempMin, setTempMin] = useState('21')
-    const [tempMax, setTempMax] = useState('33')
-    const [locationCoords, updateCoords] = useState([-38.4874, -3.7413])
-    const [morningTemp, setMorningTemp] = useState(10)
-    const [eveningTemp, setEveningTemp] = useState(10)
-    const [nightTemp, setNightTemp] = useState(10)
+    const [wind, setWind] = useState('65');
+    const [humidity, setHumidity] = useState('80');
+    const [tempMin, setTempMin] = useState('21');
+    const [tempMax, setTempMax] = useState('33');
+    const [locationCoords, updateCoords] = useState([-38.4874, -3.7413]);
+    const [morningTemp, setMorningTemp] = useState(10);
+    const [eveningTemp, setEveningTemp] = useState(10);
+    const [nightTemp, setNightTemp] = useState(10);
     
     const styles = StyleSheet.create({
         ScrollView: {
@@ -102,8 +102,6 @@ export default function DashBoard() {
         height: 20,
         width: 20,
         borderRadius: 50,
-    
-        
         },
 
 
@@ -111,83 +109,87 @@ export default function DashBoard() {
     });
 
     async function setCurrentWeather(){
-        getLocation()
+        getLocation();
 
 
         let date = new Date();
         let hour = date.getHours();
         let minute = date.getMinutes();
+        if (minute < 10) minute = '0' + minute;
         setCurrentHour(hour + ':' + minute);
 
 
-        let data = await getCurrentWeather(locationCoords)
-        setCurrentTemperature(data[0])
-        setTempMax(data[1])
-        setTempMin(data[2])
-        setWind(data[3])
-        setHumidity(data[4])
-        setLocation(data[5])
-        setNightTemp(data[6])
-        setEveningTemp(data[7])
-        setMorningTemp(data[8])
+        let data = await getCurrentWeather(locationCoords);
+        setCurrentTemperature(data[0]);
+        setTempMax(data[1]);
+        setTempMin(data[2]);
+        setWind(data[3]);
+        setHumidity(data[4]);
+        setLocation(data[5]);
+        setNightTemp(data[6]);
+        setEveningTemp(data[7]);
+        setMorningTemp(data[8]);
+        setIsRaining(data[9]);
         
     }
 
     async function getLocation() {
-        let { status } = await Location.requestForegroundPermissionsAsync()
+        let { status } = await Location.requestForegroundPermissionsAsync();
+        
         if(status !== 'granted') {
-        console.log('Permission denied.')
+            console.log('Permission denied.');
         } else {
-        let location = await Location.getCurrentPositionAsync({})
-        updateCoords(location.coords)
+            let location = await Location.getCurrentPositionAsync({});
+            updateCoords(location.coords);
         }
-
-
     }
+
+
     useEffect(() => {
         setCurrentWeather();
     }, []);
 
     return (
         <ScrollView style={styles.ScrollView}>
-        <View style={styles.container}>
-        
-        <TouchableOpacity style={styles.refreshButton} onPress={() => setCurrentWeather()}>
-        <EvilIcons name="refresh" style={{marginTop: 30}} size={40} color={darkTheme ? 'white' : 'black'} />
-        </TouchableOpacity>
-        
-        
-        <Feather name="sun" size={40} color="orange" />
-        <View style={styles.temperature}>
-            <Text style={styles.temperatureText}>{currentTemperature}</Text>
-            <Text style={[styles.temperatureText, {fontSize: 14}]}>°C</Text>
-        </View>
+            <View style={styles.container}>
 
-        <Text style={[styles.temperatureText, {fontSize: 14}]}>{location} {currentHour}</Text>
+                <TouchableOpacity style={styles.refreshButton} onPress={() => setCurrentWeather()}>
+                    <EvilIcons name="refresh" style={{marginTop: 30}} size={40} color={darkTheme ? 'white' : 'black'} />
+                </TouchableOpacity>
+                
+                
+                <Feather name="sun" size={40} color="orange" />
+                <View style={styles.temperature}>
+                    <Text style={styles.temperatureText}>{currentTemperature}</Text>
+                    <Text style={[styles.temperatureText, {fontSize: 14}]}>°C</Text>
+                </View>
 
-        <View style={styles.cardView}>
-            <MainCard title={'Manhã'} icon={'morning'} temperature={morningTemp}></MainCard>
-            <MainCard title={'Tarde'} icon={'afternoon'} temperature={eveningTemp}></MainCard>
-            <MainCard title={'Noite'} icon={'night'} temperature={nightTemp}></MainCard>
-        </View>
+                <Text style={[styles.temperatureText, {fontSize: 14}]}>{location} {currentHour}</Text>
 
-        <View style={styles.info}>
-            <Text style={styles.infoText}>Informações Adicionais </Text>
-            <View style={styles.infoCards}>
-            <InfoCard title={'Vento'} value={wind + ' m/s'}></InfoCard>
-            <InfoCard title={'Umidade'} value={humidity + '%'}></InfoCard>
-            <InfoCard title={'Temp. Max.'} value={tempMax + '°C'}></InfoCard>
-            <InfoCard title={'Temp. Min.'} value={tempMin + '°C'}></InfoCard>
+                <View style={styles.cardView}>
+                    <MainCard title={'Manhã'} icon={'morning'} temperature={morningTemp}></MainCard>
+                    <MainCard title={'Tarde'} icon={'afternoon'} temperature={eveningTemp}></MainCard>
+                    <MainCard title={'Noite'} icon={'night'} temperature={nightTemp}></MainCard>
+                </View>
+
+                <View style={styles.info}>
+                    <Text style={styles.infoText}>Informações Adicionais </Text>
+                    <View style={styles.infoCards}>
+                    <InfoCard title={'Vento'} value={wind + ' m/s'}></InfoCard>
+                    <InfoCard title={'Umidade'} value={humidity + '%'}></InfoCard>
+                    <InfoCard title={'Temp. Max.'} value={tempMax + '°C'}></InfoCard>
+                    <InfoCard title={'Temp. Min.'} value={tempMin + '°C'}></InfoCard>
+                    </View>
+                </View>
+
+                <View style={styles.themeButton}>
+                    <TouchableOpacity style={styles.squareButton} onPress={() => setDarkTheme(!darkTheme)}>
+                    <View style={styles.circleButton} ></View>
+                    </TouchableOpacity>
+                </View>
+
+                
             </View>
-        </View>
-
-        <View style={styles.themeButton}>
-            <TouchableOpacity style={styles.squareButton} onPress={() => setDarkTheme(!darkTheme)}>
-            <View style={styles.circleButton} ></View>
-            </TouchableOpacity>
-        </View>
-
-        </View>
         </ScrollView>
     );
 }

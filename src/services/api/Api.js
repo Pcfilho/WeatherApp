@@ -28,12 +28,14 @@ export default async function getCurrentWeather(locationCoords) {
 
     await axios.get(`https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=hourly&appid=${API_KEY}&units=metric`)
     .then( (response) => {
+        console.log(response);
         const data = response.data;
         const nightTemp = data.daily[0].temp.night;
         const eveningTemp = data.daily[0].temp.eve;
         const morningTemp = data.daily[0].temp.morn;
+        const isRaining = data.daily[0].weather[0].main;
 
-        results.push(nightTemp, eveningTemp, morningTemp)
+        results.push(nightTemp, eveningTemp, morningTemp, isRaining);
     })
     .catch( (err) => {
         console.error(err);
