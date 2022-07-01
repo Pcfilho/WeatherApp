@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { EvilIcons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import * as Location from 'expo-location';
 
 import getCurrentWeather from '../../services/api/Api';
@@ -12,28 +13,30 @@ import { ThemeContext } from '../../contexts/theme';
 
 export default function DashBoard() {
     const { darkTheme, setDarkTheme } = useContext(ThemeContext);
-    const [currentTemperature, setCurrentTemperature] = useState('27');
+    const [currentTemperature, setCurrentTemperature] = useState(27);
     const [location, setLocation] = useState('BR, Fortaleza');
     const [currentHour, setCurrentHour] = useState('15:00');
-    const [isRaining, setIsRaining] = useState('');
+    const [isRaining, setIsRaining] = useState("");
 
 
     const [wind, setWind] = useState('65');
     const [humidity, setHumidity] = useState('80');
     const [tempMin, setTempMin] = useState('21');
     const [tempMax, setTempMax] = useState('33');
-    const [locationCoords, updateCoords] = useState([-38.4874, -3.7413]);
+    const [locationCoords, updateCoords] = useState({});
     const [morningTemp, setMorningTemp] = useState(10);
     const [eveningTemp, setEveningTemp] = useState(10);
     const [nightTemp, setNightTemp] = useState(10);
-    
+
+
     const styles = StyleSheet.create({
         ScrollView: {
+        flex: 1,
         backgroundColor: darkTheme ? '#232634' : '#f2f2f2',
         paddingVertical: 50,
+        
         },
         container: {
-        flex: 1,
         backgroundColor: darkTheme ? '#232634' : '#f2f2f2',
         alignItems: 'center',
         marginBottom: 50,
@@ -111,13 +114,11 @@ export default function DashBoard() {
     async function setCurrentWeather(){
         getLocation();
 
-
         let date = new Date();
         let hour = date.getHours();
         let minute = date.getMinutes();
         if (minute < 10) minute = '0' + minute;
         setCurrentHour(hour + ':' + minute);
-
 
         let data = await getCurrentWeather(locationCoords);
         setCurrentTemperature(data[0]);
@@ -130,7 +131,6 @@ export default function DashBoard() {
         setEveningTemp(data[7]);
         setMorningTemp(data[8]);
         setIsRaining(data[9]);
-        
     }
 
     async function getLocation() {
@@ -144,10 +144,31 @@ export default function DashBoard() {
         }
     }
 
+    const Icon = () => {
+        if(isRaining === "Rain") {
+            return(
+                <Ionicons name="rainy" style={styles.cardIcon} size={40} color="orange" />
+            )
+        } else {
+            if (currentTemperature < 20) {
+                return(
+                    <Ionicons name="snow" style={styles.cardIcon} size={40} color="orange" />
+                )
+            } else if (currentTemperature > 20 && currentTemperature < 30) {
+                return(
+                    <Ionicons name="cloud" style={styles.cardIcon} size={40} color="orange" />            
+                )
+            } else {
+                return(
+                    <Ionicons name="sunny" style={styles.cardIcon} size={40} color="orange" />
+                )
+            }
+        }
+    }
 
     useEffect(() => {
-        setCurrentWeather();
-    }, []);
+        setCurrentWeather()
+    }, [location]);
 
     return (
         <ScrollView style={styles.ScrollView}>
@@ -158,9 +179,10 @@ export default function DashBoard() {
                 </TouchableOpacity>
                 
                 
-                <Feather name="sun" size={40} color="orange" />
+                <Icon />
+
                 <View style={styles.temperature}>
-                    <Text style={styles.temperatureText}>{currentTemperature}</Text>
+                    <Text style={styles.temperatureText}>{currentTemperature ? currentTemperature.toFixed(0) : currentTemperature}</Text>
                     <Text style={[styles.temperatureText, {fontSize: 14}]}>°C</Text>
                 </View>
 

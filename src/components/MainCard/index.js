@@ -5,14 +5,16 @@ import { Feather } from '@expo/vector-icons';
 import { Fontisto } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 
+
 import { ThemeContext } from '../../contexts/theme';
 
 
 const MainCard = (props) => {
-    const temperature = (props.temperature) ;
+    const temperature = (props.temperature);
     const { darkTheme } = useContext(ThemeContext)
     
-    let tempTreat = temperature + "°C";
+    let tempTreat = (temperature ? temperature.toFixed(0) : temperature);
+    let tempText = tempTreat + "°C";
     
     const backgroundColor =  () => {
         if (props.title === 'Manhã') {
@@ -27,17 +29,17 @@ const MainCard = (props) => {
     } 
 
     const Icon = () => {
-        if (props.icon == 'morning') {
+        if (tempTreat < 25) {
             return(
-                <Feather name="sun" style={styles.cardIcon} size={40} color="white" />
+                <Ionicons name="snow-outline" style={styles.cardIcon} size={40} color="white" />
             )
-        } else if (props.icon == 'afternoon') {
+        } else if (tempTreat == 25) {
             return(
-                <Fontisto name="day-cloudy" style={styles.cardIcon} size={40} color="white" />            
+                <Ionicons name="cloud-outline" style={styles.cardIcon} size={40} color="white" />            
             )
-        } else if (props.icon == 'night') {
+        } else {
             return(
-                <Ionicons name="cloudy-night-outline" style={styles.cardIcon} size={40} color="white" />
+                <Ionicons name="sunny-outline" style={styles.cardIcon} size={40} color="white" />
             )
         }
     }
@@ -72,7 +74,7 @@ const MainCard = (props) => {
         <View style={styles.card}>
             <Text style={styles.text}>{props.title}</Text>
             <Icon></Icon>
-            <Text style={styles.text}>{tempTreat}</Text>
+            <Text style={styles.text}>{tempText}</Text>
         </View>
     )
 }
